@@ -28,6 +28,164 @@
   },
   "brandColor": "#ffb700",
   "homepage": "https://www.elevatedsensors.com/",
+  "flow": {
+    "triggers": [
+      {
+        "id": "became-occupied",
+        "title": {
+          "en": "... become(s) occupied"
+        },
+        "titleFormatted": {
+          "en": "[[side]] become(s) occupied"
+        },
+        "hint": {
+          "en": "Triggers when the selected side(s) become(s) occupied."
+        },
+        "highlight": true,
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=bed-presence-sensor"
+          },
+          {
+            "type": "dropdown",
+            "name": "side",
+            "title": {
+              "en": "Side to trigger on"
+            },
+            "values": [
+              {
+                "id": "left",
+                "label": {
+                  "en": "The left side"
+                }
+              },
+              {
+                "id": "right",
+                "label": {
+                  "en": "The right side"
+                }
+              },
+              {
+                "id": "either",
+                "label": {
+                  "en": "Either side"
+                }
+              },
+              {
+                "id": "both",
+                "label": {
+                  "en": "Both sides"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "became-unoccupied",
+        "title": {
+          "en": "... becomes unoccupied"
+        },
+        "titleFormatted": {
+          "en": "[[side]] becomes unoccupied"
+        },
+        "hint": {
+          "en": "Triggers when the selected side(s) become unoccupied."
+        },
+        "highlight": true,
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=bed-presence-sensor"
+          },
+          {
+            "type": "dropdown",
+            "name": "side",
+            "title": {
+              "en": "Side to trigger on"
+            },
+            "values": [
+              {
+                "id": "left",
+                "label": {
+                  "en": "The left side"
+                }
+              },
+              {
+                "id": "right",
+                "label": {
+                  "en": "The right side"
+                }
+              },
+              {
+                "id": "either",
+                "label": {
+                  "en": "Either side"
+                }
+              },
+              {
+                "id": "both",
+                "label": {
+                  "en": "Both sides"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "id": "is-occupied",
+        "title": {
+          "en": "... is !{{occupied|unoccupied}}"
+        },
+        "titleFormatted": {
+          "en": "[[side]] is !{{occupied|unoccupied}}"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=bed-presence-sensor"
+          },
+          {
+            "type": "dropdown",
+            "name": "side",
+            "values": [
+              {
+                "id": "left",
+                "label": {
+                  "en": "The left side"
+                }
+              },
+              {
+                "id": "right",
+                "label": {
+                  "en": "The right side"
+                }
+              },
+              {
+                "id": "either",
+                "label": {
+                  "en": "Either side"
+                }
+              },
+              {
+                "id": "both",
+                "label": {
+                  "en": "Both sides"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
   "drivers": [
     {
       "name": {

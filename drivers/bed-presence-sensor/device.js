@@ -9,8 +9,34 @@ module.exports = class MyDevice extends Homey.Device {
    * onInit is called when the device is initialized.
    */
   async onInit() {
+    this._becameOccupied = this.homey.flow.getDeviceTriggerCard("became-occupied");
+    this._becameOccupied.registerRunListener(async (args, state) => {
+      return args.side === state.side;
+    });
+
+    this._becameUncccupied = this.homey.flow.getDeviceTriggerCard("became-unoccupied");
+    this._becameUncccupied.registerRunListener(async (args, state) => {
+      return args.side === state.side;
+    });
+
+    this._isOccupied = this.homey.flow.getConditionCard("is-occupied");
+    this._isOccupied.registerRunListener(async (args, state) => {
+      if (args.side === 'left') {
+        return this.getCapabilityValue('alarm_presence.left') === true;
+      }
+      if (args.side === 'right') {
+        return this.getCapabilityValue('alarm_presence.right') === true;
+      }
+      if (args.side === 'either') {
+        return this.getCapabilityValue('alarm_presence.left') === true || this.getCapabilityValue('alarm_presence.right') === true;
+      }
+      if (args.side === 'both') {
+        return this.getCapabilityValue('alarm_presence.left') === true && this.getCapabilityValue('alarm_presence.right') === true;
+      }
+      return false;
+    });
+
     const { EspHomeClient } = await import('esphome-client');
-    
     const client = new EspHomeClient({
       host: this.getStoreValue('address'),
       port: this.getStoreValue('port'),
@@ -62,10 +88,41 @@ module.exports = class MyDevice extends Homey.Device {
       //console.log('Received binary update:', data);
       if (data.entity === 'Bed Occupied Left') {
         this.setCapabilityValue('alarm_presence.left', data.state);
+        if (data.state) {
+          this._becameOccupied.trigger(this, {}, { side: 'left' });
+        }
+        else {
+          this._becameUncccupied.trigger(this, {}, { side: 'left' });
+        }
       }
 
       if (data.entity === 'Bed Occupied Right') {
         this.setCapabilityValue('alarm_presence.right', data.state);
+        if (data.state) {
+          this._becameOccupied.trigger(this, {}, { side: 'right' });
+        }
+        else {
+          this._becameUncccupied.trigger(this, {}, { side: 'right' });
+        }
+      }
+
+      // Eiter/Both don't have specific capabilities, so only trigger flows.
+      if (data.entity === 'Bed Occupied Either') {
+        if (data.state) {
+          this._becameOccupied.trigger(this, {}, { side: 'either' });
+        }
+        else {
+          this._becameUncccupied.trigger(this, {}, { side: 'either' });
+        }
+      }
+
+      if (data.entity === 'Bed Occupied Both') {
+        if (data.state) {
+          this._becameOccupied.trigger(this, {}, { side: 'both' });
+        }
+        else {
+          this._becameUncccupied.trigger(this, {}, { side: 'both' });
+        }
       }
     });
 
