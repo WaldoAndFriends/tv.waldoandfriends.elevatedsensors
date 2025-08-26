@@ -1,0 +1,116 @@
+{
+  "name": {
+    "en": "Bed Presence Sensor"
+  },
+  "class": "sensor",
+  "capabilities": [
+    "alarm_presence.left",
+    "alarm_presence.right",
+    "measure_confidence.left",
+    "measure_confidence.right",
+    "button.calibrate_left_occupied",
+    "button.calibrate_left_unoccupied",
+    "button.calibrate_right_occupied",
+    "button.calibrate_right_unoccupied",
+    "response_speed_mode",
+    "full_range_mode",
+    "trigger_pressure.left",
+    "trigger_pressure.right"
+  ],
+  "capabilitiesOptions": {
+    "alarm_presence.left": {
+      "title": {
+        "en": "Left Side Occupied"
+      }
+    },
+    "alarm_presence.right": {
+      "title": {
+        "en": "Right Side Occupied"
+      }
+    },
+    "measure_confidence.left": {
+      "title": {
+        "en": "Left Side Pressure"
+      }
+    },
+    "measure_confidence.right": {
+      "title": {
+        "en": "Right Side Pressure"
+      }
+    },
+    "button.calibrate_left_occupied": {
+      "title": {
+        "en": "Calibrate Left Side Occupied"
+      },
+      "desc": {
+        "en": "Start the calibration process for the left side when it is occupied."
+      },
+      "maintenanceAction": true
+    },
+    "button.calibrate_left_unoccupied": {
+      "title": {
+        "en": "Calibrate Left Side Unoccupied"
+      },
+      "desc": {
+        "en": "Start the calibration process for the left side when it is unoccupied."
+      },
+      "maintenanceAction": true
+    },
+    "button.calibrate_right_occupied": {
+      "title": {
+        "en": "Calibrate Right Side Occupied"
+      },
+      "desc": {
+        "en": "Start the calibration process for the right side when it is occupied."
+      },
+      "maintenanceAction": true
+    },
+    "button.calibrate_right_unoccupied": {
+      "title": {
+        "en": "Calibrate Right Side Unoccupied"
+      },
+      "desc": {
+        "en": "Start the calibration process for the right side when it is unoccupied."
+      },
+      "maintenanceAction": true
+    },
+    "trigger_pressure.left": {
+      "title": {
+        "en": "Left Side Trigger Pressure"
+      }
+    },
+    "trigger_pressure.right": {
+      "title": {
+        "en": "Right Side Trigger Pressure"
+      }
+    }
+  },
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [
+    "lan"
+  ],
+  "discovery": "bed-presence-sensor-discovery",
+  "pair": [
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      },
+      "options": {
+        "singular": false
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ],
+  "images": {
+    "small": "{{driverAssetsPath}}/images/small.png",
+    "large": "{{driverAssetsPath}}/images/large.png",
+    "xlarge": "{{driverAssetsPath}}/images/xlarge.png"
+  }
+}

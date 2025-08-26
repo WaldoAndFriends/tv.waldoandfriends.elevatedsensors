@@ -1,0 +1,11 @@
+{
+  "type": "number",
+  "title": { "en": "Trigger Pressure" },
+  "uiComponent": "slider",
+  "getable": true,
+  "setable": true,
+  "units": { "en": "%" },
+  "min": 0,
+  "max": 1,
+  "step": 0.01
+}

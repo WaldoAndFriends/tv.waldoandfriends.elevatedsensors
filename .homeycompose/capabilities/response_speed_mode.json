@@ -1,0 +1,12 @@
+{
+  "type": "enum",
+  "title": { "en": "Response Speed" },
+  "getable": true,
+  "setable": true,
+  "uiComponent": "picker",
+  "values": [
+    { "id": "Slow", "title": { "en": "Slow" } },
+    { "id": "Normal", "title": { "en": "Normal" }, "default": true },
+    { "id": "Fast", "title": { "en": "Fast" } }
+  ]
+}

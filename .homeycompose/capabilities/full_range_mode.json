@@ -1,0 +1,11 @@
+{
+  "type": "enum",
+  "title": { "en": "Full Range" },
+  "getable": true,
+  "setable": true,
+  "uiComponent": "picker",
+  "values": [
+    { "id": "On", "title": { "en": "On" } },
+    { "id": "Off", "title": { "en": "Off" }}
+  ]
+}

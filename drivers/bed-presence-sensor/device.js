@@ -1,0 +1,168 @@
+'use strict';
+
+const Homey = require('homey');
+
+module.exports = class MyDevice extends Homey.Device {
+  
+
+  /**
+   * onInit is called when the device is initialized.
+   */
+  async onInit() {
+    const { EspHomeClient } = await import('esphome-client');
+    
+    const client = new EspHomeClient({
+      host: this.getStoreValue('address'),
+      port: this.getStoreValue('port'),
+      reconnect: true,
+      reconnectInterval: 15000,
+      connectionTimeout: 30000,
+      clientId: 'homey-elevated-sensors',
+    });
+
+    // Sliders
+    this.registerCapabilityListener("trigger_pressure.left", async (value) => {
+      await client.sendNumberCommand('number-left_trigger_pressure', value * 100);
+      this.setCapabilityValue('trigger_pressure.left', value);
+    });
+    this.registerCapabilityListener("trigger_pressure.right", async (value) => {
+      await client.sendNumberCommand('number-right_trigger_pressure', value * 100);
+      this.setCapabilityValue('trigger_pressure.right', value);
+    });
+
+    // Buttons
+    this.registerCapabilityListener("button.calibrate_left_occupied", async (value) => {
+      await client.sendButtonCommand('button-calibrate_left_occupied');
+    });
+    this.registerCapabilityListener("button.calibrate_left_unoccupied", async (value) => {
+      await client.sendButtonCommand('button-calibrate_left_unoccupied');
+    });
+    this.registerCapabilityListener("button.calibrate_right_occupied", async (value) => {
+      await client.sendButtonCommand('button-calibrate_right_occupied');
+    });
+    this.registerCapabilityListener("button.calibrate_right_unoccupied", async (value) => {
+      await client.sendButtonCommand('button-calibrate_right_unoccupied');
+    });
+
+    // Pickers
+    this.registerCapabilityListener("full_range_mode", async (value) => {
+      await client.sendSwitchCommand('switch-full_range', value === "On" ? true : false);
+      this.setCapabilityValue('full_range_mode', value);
+    });
+
+    this.registerCapabilityListener("response_speed_mode", async (value) => {
+      await client.sendSelectCommand('select-response_speed', value);
+      this.setCapabilityValue('response_speed_mode', value);
+    });
+
+
+    // Handle incoming updates from ESPHome
+    client.on('binary_sensor', (data) => {
+      data.state = data.state || false;
+      //console.log('Received binary update:', data);
+      if (data.entity === 'Bed Occupied Left') {
+        this.setCapabilityValue('alarm_presence.left', data.state);
+      }
+
+      if (data.entity === 'Bed Occupied Right') {
+        this.setCapabilityValue('alarm_presence.right', data.state);
+      }
+    });
+
+    client.on('number', (data) => {
+      //console.log('Received number update:', data);      
+      if (data.entity === 'Left Trigger Pressure') {
+        data.state = data.state || 0;
+        const newValue = data.state / 100;
+        if (newValue !== this.getCapabilityValue('trigger_pressure.left')) {
+          this.setCapabilityValue('trigger_pressure.left', newValue);
+        }
+      }
+
+      if (data.entity === 'Right Trigger Pressure') {
+        data.state = data.state || 0;
+        const newValue = data.state / 100;
+        if (newValue !== this.getCapabilityValue('trigger_pressure.right')) {
+          this.setCapabilityValue('trigger_pressure.right', newValue);
+        }
+      }
+    });
+
+    client.on('sensor', (data) => {
+      if (data.entity === 'Left Pressure') {
+        data.state = data.state || 0;
+
+        if (data.state !== this.getCapabilityValue('measure_confidence.left')) {
+          this.setCapabilityValue('measure_confidence.left', data.state);
+        }
+      }
+
+      if (data.entity === 'Right Pressure') {
+        data.state = data.state || 0;
+
+        if (data.state !== this.getCapabilityValue('measure_confidence.right')) {
+          this.setCapabilityValue('measure_confidence.right', data.state);
+        }
+      }
+    });
+
+    client.on('select', (data) => {
+      //console.log('Received select update:', data);
+      if (data.entity === 'Response Speed') {
+        if (data.state && data.state !== this.getCapabilityValue('response_speed_mode')) {
+          this.setCapabilityValue('response_speed_mode', data.state);
+        }
+      }
+    });
+
+    client.on('switch', (data) => {
+      //console.log('Received switch update:', data);
+      if (data.entity === 'Full Range') {
+        // if data.state is undefined set it to false.
+        data.state = data.state || false;
+        this.setCapabilityValue('full_range_mode', data.state ? "On" : "Off");
+      }
+      
+    });
+
+
+    client.connect();
+    this.log('MyDevice has been initialized');
+  }
+
+  /**
+   * onAdded is called when the user adds the device, called just after pairing.
+   */
+  async onAdded() {
+    this.log('MyDevice has been added');
+  }
+
+  /**
+   * onSettings is called when the user updates the device's settings.
+   * @param {object} event the onSettings event data
+   * @param {object} event.oldSettings The old settings object
+   * @param {object} event.newSettings The new settings object
+   * @param {string[]} event.changedKeys An array of keys changed since the previous version
+   * @returns {Promise<string|void>} return a custom message that will be displayed
+   */
+  async onSettings({ oldSettings, newSettings, changedKeys }) {
+    this.log('MyDevice settings where changed');
+  }
+
+  /**
+   * onRenamed is called when the user updates the device's name.
+   * This method can be used this to synchronise the name to the device.
+   * @param {string} name The new name
+   */
+  async onRenamed(name) {
+    this.log('MyDevice was renamed');
+  }
+
+  /**
+   * onDeleted is called when the user deleted the device.
+   */
+  async onDeleted() {
+    this.log('MyDevice has been deleted');
+  }
+
+};

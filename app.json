@@ -1,0 +1,257 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "tv.waldoandfriends.elevatedsensors",
+  "version": "1.0.0",
+  "compatibility": ">=12.4.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Elevated Sensors"
+  },
+  "description": {
+    "en": "Bring your DIY to a new level"
+  },
+  "category": [
+    "security"
+  ],
+  "permissions": [],
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "author": {
+    "name": "Wouter Janson-Korhorn",
+    "email": "wouterjanson@icloud.com"
+  },
+  "brandColor": "#ffb700",
+  "homepage": "https://www.elevatedsensors.com/",
+  "drivers": [
+    {
+      "name": {
+        "en": "Bed Presence Sensor"
+      },
+      "class": "sensor",
+      "capabilities": [
+        "alarm_presence.left",
+        "alarm_presence.right",
+        "measure_confidence.left",
+        "measure_confidence.right",
+        "button.calibrate_left_occupied",
+        "button.calibrate_left_unoccupied",
+        "button.calibrate_right_occupied",
+        "button.calibrate_right_unoccupied",
+        "response_speed_mode",
+        "full_range_mode",
+        "trigger_pressure.left",
+        "trigger_pressure.right"
+      ],
+      "capabilitiesOptions": {
+        "alarm_presence.left": {
+          "title": {
+            "en": "Left Side Occupied"
+          }
+        },
+        "alarm_presence.right": {
+          "title": {
+            "en": "Right Side Occupied"
+          }
+        },
+        "measure_confidence.left": {
+          "title": {
+            "en": "Left Side Pressure"
+          }
+        },
+        "measure_confidence.right": {
+          "title": {
+            "en": "Right Side Pressure"
+          }
+        },
+        "button.calibrate_left_occupied": {
+          "title": {
+            "en": "Calibrate Left Side Occupied"
+          },
+          "desc": {
+            "en": "Start the calibration process for the left side when it is occupied."
+          },
+          "maintenanceAction": true
+        },
+        "button.calibrate_left_unoccupied": {
+          "title": {
+            "en": "Calibrate Left Side Unoccupied"
+          },
+          "desc": {
+            "en": "Start the calibration process for the left side when it is unoccupied."
+          },
+          "maintenanceAction": true
+        },
+        "button.calibrate_right_occupied": {
+          "title": {
+            "en": "Calibrate Right Side Occupied"
+          },
+          "desc": {
+            "en": "Start the calibration process for the right side when it is occupied."
+          },
+          "maintenanceAction": true
+        },
+        "button.calibrate_right_unoccupied": {
+          "title": {
+            "en": "Calibrate Right Side Unoccupied"
+          },
+          "desc": {
+            "en": "Start the calibration process for the right side when it is unoccupied."
+          },
+          "maintenanceAction": true
+        },
+        "trigger_pressure.left": {
+          "title": {
+            "en": "Left Side Trigger Pressure"
+          }
+        },
+        "trigger_pressure.right": {
+          "title": {
+            "en": "Right Side Trigger Pressure"
+          }
+        }
+      },
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "discovery": "bed-presence-sensor-discovery",
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          },
+          "options": {
+            "singular": false
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "images": {
+        "small": "/drivers/bed-presence-sensor/assets/images/small.png",
+        "large": "/drivers/bed-presence-sensor/assets/images/large.png",
+        "xlarge": "/drivers/bed-presence-sensor/assets/images/xlarge.png"
+      },
+      "id": "bed-presence-sensor"
+    }
+  ],
+  "capabilities": {
+    "full_range_mode": {
+      "type": "enum",
+      "title": {
+        "en": "Full Range"
+      },
+      "getable": true,
+      "setable": true,
+      "uiComponent": "picker",
+      "values": [
+        {
+          "id": "On",
+          "title": {
+            "en": "On"
+          }
+        },
+        {
+          "id": "Off",
+          "title": {
+            "en": "Off"
+          }
+        }
+      ]
+    },
+    "measure_confidence": {
+      "type": "number",
+      "title": {
+        "en": "Pressure"
+      },
+      "uiComponent": "sensor",
+      "getable": true,
+      "setable": false,
+      "units": {
+        "en": "%"
+      },
+      "min": 0,
+      "max": 100,
+      "step": 0.01,
+      "icon": "/assets/weight.svg"
+    },
+    "response_speed_mode": {
+      "type": "enum",
+      "title": {
+        "en": "Response Speed"
+      },
+      "getable": true,
+      "setable": true,
+      "uiComponent": "picker",
+      "values": [
+        {
+          "id": "Slow",
+          "title": {
+            "en": "Slow"
+          }
+        },
+        {
+          "id": "Normal",
+          "title": {
+            "en": "Normal"
+          },
+          "default": true
+        },
+        {
+          "id": "Fast",
+          "title": {
+            "en": "Fast"
+          }
+        }
+      ]
+    },
+    "trigger_pressure": {
+      "type": "number",
+      "title": {
+        "en": "Trigger Pressure"
+      },
+      "uiComponent": "slider",
+      "getable": true,
+      "setable": true,
+      "units": {
+        "en": "%"
+      },
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    }
+  },
+  "discovery": {
+    "bed-presence-sensor-discovery": {
+      "type": "mdns-sd",
+      "mdns-sd": {
+        "name": "esphomelib",
+        "protocol": "tcp"
+      },
+      "id": "{{txt.friendly_name}}",
+      "conditions": [
+        [
+          {
+            "field": "txt.project_name",
+            "match": {
+              "type": "string",
+              "value": "ElevatedSensors.BedPresenceMk1"
+            }
+          }
+        ]
+      ]
+    }
+  }
+}
