@@ -2,13 +2,13 @@
 
 const Homey = require('homey');
 
-module.exports = class MyDriver extends Homey.Driver {
+module.exports = class BedPresenceDriver extends Homey.Driver {
 
   /**
    * onInit is called when the driver is initialized.
    */
   async onInit() {
-    this.log('MyDriver has been initialized');
+    this.log('BedPresenceDriver has been initialized');
   }
 
   /**

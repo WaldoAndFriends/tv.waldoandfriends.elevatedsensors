@@ -2,7 +2,7 @@
 
 const Homey = require('homey');
 
-module.exports = class MyDevice extends Homey.Device {
+module.exports = class BedPresenceDevice extends Homey.Device {
   
 
   /**
@@ -184,14 +184,14 @@ module.exports = class MyDevice extends Homey.Device {
 
 
     client.connect();
-    this.log('MyDevice has been initialized');
+    this.log('BedPresenceDevice has been initialized');
   }
 
   /**
    * onAdded is called when the user adds the device, called just after pairing.
    */
   async onAdded() {
-    this.log('MyDevice has been added');
+    this.log('BedPresenceDevice has been added');
   }
 
   /**
@@ -203,7 +203,7 @@ module.exports = class MyDevice extends Homey.Device {
    * @returns {Promise<string|void>} return a custom message that will be displayed
    */
   async onSettings({ oldSettings, newSettings, changedKeys }) {
-    this.log('MyDevice settings where changed');
+    this.log('BedPresenceDevice settings where changed');
   }
 
   /**
@@ -212,14 +212,14 @@ module.exports = class MyDevice extends Homey.Device {
    * @param {string} name The new name
    */
   async onRenamed(name) {
-    this.log('MyDevice was renamed');
+    this.log('BedPresenceDevice was renamed');
   }
 
   /**
    * onDeleted is called when the user deleted the device.
    */
   async onDeleted() {
-    this.log('MyDevice has been deleted');
+    this.log('BedPresenceDevice has been deleted');
   }
 
 };
