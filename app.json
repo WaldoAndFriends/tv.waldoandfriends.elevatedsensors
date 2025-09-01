@@ -28,6 +28,12 @@
   },
   "brandColor": "#ffb700",
   "homepage": "https://www.elevatedsensors.com/",
+  "tags": {
+    "en": [
+      "bed",
+      "presence"
+    ]
+  },
   "flow": {
     "triggers": [
       {

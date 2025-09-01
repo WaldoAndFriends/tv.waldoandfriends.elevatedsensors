@@ -1,7 +1,11 @@
-Endless Automation Potential:
+Unlock smarter living with the Elevated Bed Presence Sensor.
+Your routines become effortless when your home knows whether you’re in bed or not.
 
-- Adjust thermostat schedule
-- Arm/disarm security system
-- Turn off all lights
-- Morning announcements
-- Enable pathway lighting for midnight bathroom breaks
+Endless automation possibilities:
+- Fine-tune your thermostat for comfort and efficiency
+- Arm or disarm your security system automatically
+- Power down the house when you settle in for the night
+- Wake up to morning announcements tailored to you
+- Light a safe pathway for midnight trips
+
+Seamlessly integrate bed presence awareness into your Homey flows and make your smart home truly responsive.

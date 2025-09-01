@@ -26,5 +26,11 @@
     "email": "wouterjanson@icloud.com"
   },
   "brandColor": "#ffb700",
-  "homepage": "https://www.elevatedsensors.com/"
+  "homepage": "https://www.elevatedsensors.com/",
+  "tags": {
+    "en": [
+      "bed",
+      "presence"
+    ]
+  }
 }
