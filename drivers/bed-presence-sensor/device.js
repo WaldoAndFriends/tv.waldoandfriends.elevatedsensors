@@ -1,190 +1,43 @@
 'use strict';
 
 const Homey = require('homey');
+const ESPHomeManager = require('./lib/ESPHomeManager');
+const FlowCardManager = require('./lib/FlowCardManager');
+const CapabilityManager = require('./lib/CapabilityManager');
+const EventHandlers = require('./lib/EventHandlers');
 
 module.exports = class BedPresenceDevice extends Homey.Device {
-  
 
   /**
    * onInit is called when the device is initialized.
    */
   async onInit() {
-    this._becameOccupied = this.homey.flow.getDeviceTriggerCard("became-occupied");
-    this._becameOccupied.registerRunListener(async (args, state) => {
-      return args.side === state.side;
-    });
-
-    this._becameUncccupied = this.homey.flow.getDeviceTriggerCard("became-unoccupied");
-    this._becameUncccupied.registerRunListener(async (args, state) => {
-      return args.side === state.side;
-    });
-
-    this._isOccupied = this.homey.flow.getConditionCard("is-occupied");
-    this._isOccupied.registerRunListener(async (args, state) => {
-      if (args.side === 'left') {
-        return this.getCapabilityValue('alarm_presence.left') === true;
-      }
-      if (args.side === 'right') {
-        return this.getCapabilityValue('alarm_presence.right') === true;
-      }
-      if (args.side === 'either') {
-        return this.getCapabilityValue('alarm_presence.left') === true || this.getCapabilityValue('alarm_presence.right') === true;
-      }
-      if (args.side === 'both') {
-        return this.getCapabilityValue('alarm_presence.left') === true && this.getCapabilityValue('alarm_presence.right') === true;
-      }
-      return false;
-    });
-
-    const { EspHomeClient } = await import('esphome-client');
-    const client = new EspHomeClient({
-      host: this.getStoreValue('address'),
-      port: this.getStoreValue('port'),
-      reconnect: true,
-      reconnectInterval: 15000,
-      connectionTimeout: 30000,
-      clientId: 'homey-elevated-sensors',
-    });
-
-    // Sliders
-    this.registerCapabilityListener("trigger_pressure.left", async (value) => {
-      await client.sendNumberCommand('number-left_trigger_pressure', value * 100);
-      this.setCapabilityValue('trigger_pressure.left', value);
-    });
-    this.registerCapabilityListener("trigger_pressure.right", async (value) => {
-      await client.sendNumberCommand('number-right_trigger_pressure', value * 100);
-      this.setCapabilityValue('trigger_pressure.right', value);
-    });
-
-    // Buttons
-    this.registerCapabilityListener("button.calibrate_left_occupied", async (value) => {
-      await client.sendButtonCommand('button-calibrate_left_occupied');
-    });
-    this.registerCapabilityListener("button.calibrate_left_unoccupied", async (value) => {
-      await client.sendButtonCommand('button-calibrate_left_unoccupied');
-    });
-    this.registerCapabilityListener("button.calibrate_right_occupied", async (value) => {
-      await client.sendButtonCommand('button-calibrate_right_occupied');
-    });
-    this.registerCapabilityListener("button.calibrate_right_unoccupied", async (value) => {
-      await client.sendButtonCommand('button-calibrate_right_unoccupied');
-    });
-
-    // Pickers
-    this.registerCapabilityListener("full_range_mode", async (value) => {
-      await client.sendSwitchCommand('switch-full_range', value === "On" ? true : false);
-      this.setCapabilityValue('full_range_mode', value);
-    });
-
-    this.registerCapabilityListener("response_speed_mode", async (value) => {
-      await client.sendSelectCommand('select-response_speed', value);
-      this.setCapabilityValue('response_speed_mode', value);
-    });
-
-
-    // Handle incoming updates from ESPHome
-    client.on('binary_sensor', (data) => {
-      data.state = data.state || false;
-      //console.log('Received binary update:', data);
-      if (data.entity === 'Bed Occupied Left') {
-        this.setCapabilityValue('alarm_presence.left', data.state);
-        if (data.state) {
-          this._becameOccupied.trigger(this, {}, { side: 'left' });
-        }
-        else {
-          this._becameUncccupied.trigger(this, {}, { side: 'left' });
-        }
-      }
-
-      if (data.entity === 'Bed Occupied Right') {
-        this.setCapabilityValue('alarm_presence.right', data.state);
-        if (data.state) {
-          this._becameOccupied.trigger(this, {}, { side: 'right' });
-        }
-        else {
-          this._becameUncccupied.trigger(this, {}, { side: 'right' });
-        }
-      }
-
-      // Eiter/Both don't have specific capabilities, so only trigger flows.
-      if (data.entity === 'Bed Occupied Either') {
-        if (data.state) {
-          this._becameOccupied.trigger(this, {}, { side: 'either' });
-        }
-        else {
-          this._becameUncccupied.trigger(this, {}, { side: 'either' });
-        }
-      }
-
-      if (data.entity === 'Bed Occupied Both') {
-        if (data.state) {
-          this._becameOccupied.trigger(this, {}, { side: 'both' });
-        }
-        else {
-          this._becameUncccupied.trigger(this, {}, { side: 'both' });
-        }
-      }
-    });
-
-    client.on('number', (data) => {
-      //console.log('Received number update:', data);      
-      if (data.entity === 'Left Trigger Pressure') {
-        data.state = data.state || 0;
-        const newValue = data.state / 100;
-        if (newValue !== this.getCapabilityValue('trigger_pressure.left')) {
-          this.setCapabilityValue('trigger_pressure.left', newValue);
-        }
-      }
-
-      if (data.entity === 'Right Trigger Pressure') {
-        data.state = data.state || 0;
-        const newValue = data.state / 100;
-        if (newValue !== this.getCapabilityValue('trigger_pressure.right')) {
-          this.setCapabilityValue('trigger_pressure.right', newValue);
-        }
-      }
-    });
-
-    client.on('sensor', (data) => {
-      if (data.entity === 'Left Pressure') {
-        data.state = data.state || 0;
-
-        if (data.state !== this.getCapabilityValue('measure_confidence.left')) {
-          this.setCapabilityValue('measure_confidence.left', data.state);
-        }
-      }
-
-      if (data.entity === 'Right Pressure') {
-        data.state = data.state || 0;
-
-        if (data.state !== this.getCapabilityValue('measure_confidence.right')) {
-          this.setCapabilityValue('measure_confidence.right', data.state);
-        }
-      }
-    });
-
-    client.on('select', (data) => {
-      //console.log('Received select update:', data);
-      if (data.entity === 'Response Speed') {
-        if (data.state && data.state !== this.getCapabilityValue('response_speed_mode')) {
-          this.setCapabilityValue('response_speed_mode', data.state);
-        }
-      }
-    });
-
-    client.on('switch', (data) => {
-      //console.log('Received switch update:', data);
-      if (data.entity === 'Full Range') {
-        // if data.state is undefined set it to false.
-        data.state = data.state || false;
-        this.setCapabilityValue('full_range_mode', data.state ? "On" : "Off");
-      }
+    try {
+      this.log('Initializing BedPresenceDevice...');
       
-    });
+      // Initialize managers
+      this.espHomeManager = new ESPHomeManager(this);
+      this.flowCardManager = new FlowCardManager(this);
+      this.capabilityManager = new CapabilityManager(this, this.espHomeManager);
+      this.eventHandlers = new EventHandlers(this, this.flowCardManager);
+      
+      // Initialize flow cards
+      this.flowCardManager.initialize();
+      
+      // Initialize ESPHome client
+      this.client = await this.espHomeManager.initialize();
+      
+      // Register capability listeners
+      this.capabilityManager.registerListeners();
+    
+      // Register ESPHome event handlers
+      this.eventHandlers.register(this.client);
 
-
-    client.connect();
-    this.log('BedPresenceDevice has been initialized');
+      this.log('BedPresenceDevice has been initialized successfully');
+    } catch (error) {
+      this.error('Failed to initialize BedPresenceDevice:', error);
+      throw error;
+    }
   }
 
   /**
@@ -203,7 +56,25 @@ module.exports = class BedPresenceDevice extends Homey.Device {
    * @returns {Promise<string|void>} return a custom message that will be displayed
    */
   async onSettings({ oldSettings, newSettings, changedKeys }) {
-    this.log('BedPresenceDevice settings where changed');
+    this.log('BedPresenceDevice settings changed:', {
+      oldSettings,
+      newSettings,
+      changedKeys
+    });
+    
+    // Check if connection settings changed and reconnect if needed
+    const connectionChanged = changedKeys.some(key => ['address', 'port'].includes(key));
+    if (connectionChanged && this.espHomeManager) {
+      try {
+        this.client = await this.espHomeManager.reconnect();
+        // Re-register event handlers with new client
+        this.eventHandlers.register(this.client);
+        this.log('ESPHome client reconnected successfully');
+      } catch (error) {
+        this.error('Failed to reconnect ESPHome client:', error);
+        throw new Error('Failed to reconnect to ESPHome device with new settings');
+      }
+    }
   }
 
   /**
@@ -212,13 +83,20 @@ module.exports = class BedPresenceDevice extends Homey.Device {
    * @param {string} name The new name
    */
   async onRenamed(name) {
-    this.log('BedPresenceDevice was renamed');
+    this.log(`BedPresenceDevice was renamed to: ${name}`);
   }
 
   /**
    * onDeleted is called when the user deleted the device.
    */
   async onDeleted() {
+    this.log('BedPresenceDevice is being deleted, cleaning up...');
+    
+    // Clean up ESPHome client connection
+    if (this.espHomeManager) {
+      this.espHomeManager.disconnect();
+    }
+    
     this.log('BedPresenceDevice has been deleted');
   }
 

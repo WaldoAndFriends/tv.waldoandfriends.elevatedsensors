@@ -17,7 +17,7 @@
           "type": "dropdown",
           "name": "side",
           "title": {
-            "en": "Side to trigger on"
+            "en": "Side(s)"
           },
           "values": [
             {
@@ -65,7 +65,7 @@
           "type": "dropdown",
           "name": "side",
           "title": {
-            "en": "Side to trigger on"
+            "en": "Side(s)"
           },
           "values": [
             {
@@ -106,10 +106,16 @@
       "titleFormatted": {
         "en": "[[side]] is !{{occupied|unoccupied}}"
       },
+      "hint": {
+        "en": "Checks if the selected side(s) is occupied or unoccupied."
+      },
       "args": [
         {
           "type": "dropdown",
           "name": "side",
+          "title": {
+            "en": "Side(s)"
+          },
           "values": [
             {
               "id": "left",
