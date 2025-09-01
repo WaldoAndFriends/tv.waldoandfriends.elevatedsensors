@@ -4,5 +4,8 @@
   },
   "1.0.1": {
     "en": "Added sentry logging"
+  },
+  "1.0.2": {
+    "en": "Logic refactor"
   }
 }
