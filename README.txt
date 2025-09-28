@@ -9,3 +9,5 @@ Endless automation possibilities:
 - Light a safe pathway for midnight trips
 
 Seamlessly integrate bed presence awareness into your Homey flows and make your smart home truly responsive.
+
+This app is an independent project and is not affiliated with or endorsed by Elevated Sensors.
