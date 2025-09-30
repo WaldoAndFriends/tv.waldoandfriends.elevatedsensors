@@ -4,6 +4,7 @@
   },
   "class": "sensor",
   "capabilities": [
+    "alarm_presence",
     "alarm_presence.left",
     "alarm_presence.right",
     "measure_confidence.left",
@@ -18,6 +19,11 @@
     "trigger_pressure.right"
   ],
   "capabilitiesOptions": {
+    "alarm_presence": {
+      "title": {
+        "en": "Bed Occupied"
+      }
+    },
     "alarm_presence.left": {
       "title": {
         "en": "Left Side Occupied"

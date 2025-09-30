@@ -53,6 +53,7 @@ class EventHandlers {
     // Update capability values for left/right sides only
     if (side === 'left' || side === 'right') {
       this.device.setCapabilityValue(`alarm_presence.${side}`, state);
+      this.device.setCapabilityValue('alarm_presence', state);
     }
 
     // Trigger appropriate flow cards

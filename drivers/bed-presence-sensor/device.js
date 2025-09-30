@@ -15,6 +15,8 @@ module.exports = class BedPresenceDevice extends Homey.Device {
     try {
       this.log('Initializing BedPresenceDevice...');
       
+      await this.migrateCapabilities();
+
       // Initialize managers
       this.espHomeManager = new ESPHomeManager(this);
       this.flowCardManager = new FlowCardManager(this);
@@ -36,6 +38,25 @@ module.exports = class BedPresenceDevice extends Homey.Device {
       this.log('BedPresenceDevice has been initialized successfully');
     } catch (error) {
       this.error('Failed to initialize BedPresenceDevice:', error);
+      throw error;
+    }
+  }
+
+    /**
+   * Ensure required capabilities are available on the device
+   * This method handles capability migrations for existing devices
+   */
+  async migrateCapabilities() {
+    try {
+      // Check for alarm_presence capability
+      if (this.hasCapability('alarm_presence') === false) {
+        this.log('Adding missing alarm_presence capability...');
+        await this.addCapability('alarm_presence');
+        this.log('Successfully added alarm_presence capability');
+      }
+
+    } catch (error) {
+      this.error('Failed to migrate:', error);
       throw error;
     }
   }
