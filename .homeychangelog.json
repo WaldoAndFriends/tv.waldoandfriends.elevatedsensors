@@ -10,5 +10,8 @@
   },
   "1.0.3": {
     "en": "Finalize for launch"
+  },
+  "1.0.4": {
+    "en": "Added global alarm_presence capability to allow for zone activity"
   }
 }
