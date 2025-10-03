@@ -29,8 +29,7 @@ class EventHandlers {
    */
   _handleBinarySensorUpdate(data) {
     data.state = data.state || false;
-    this.device.log(`Received binary sensor update - Entity: ${data.entity}, State: ${data.state}`);
-    
+
     const entityHandlers = {
       'Bed Occupied Left': () => this._handleOccupancyUpdate('left', data.state),
       'Bed Occupied Right': () => this._handleOccupancyUpdate('right', data.state),
@@ -41,8 +40,6 @@ class EventHandlers {
     const handler = entityHandlers[data.entity];
     if (handler) {
       handler();
-    } else {
-      this.device.log(`Unknown binary sensor entity: ${data.entity}`);
     }
   }
 
@@ -91,22 +88,16 @@ class EventHandlers {
    * Handle sensor updates (pressure measurements)
    */
   _handleSensorUpdate(data) {
-    this.device.log(`Received sensor update - Entity: ${data.entity}, State: ${data.state}`);
-    
     data.state = data.state || 0;
 
     if (data.entity === 'Left Pressure') {
       if (data.state !== this.device.getCapabilityValue('measure_confidence.left')) {
         this.device.setCapabilityValue('measure_confidence.left', data.state);
-        this.device.log(`Updated left pressure measurement to ${data.state}`);
       }
     } else if (data.entity === 'Right Pressure') {
       if (data.state !== this.device.getCapabilityValue('measure_confidence.right')) {
         this.device.setCapabilityValue('measure_confidence.right', data.state);
-        this.device.log(`Updated right pressure measurement to ${data.state}`);
       }
-    } else {
-      this.device.log(`Unknown sensor entity: ${data.entity}`);
     }
   }
 
@@ -139,8 +130,6 @@ class EventHandlers {
         this.device.setCapabilityValue('full_range_mode', newValue);
         this.device.log(`Updated full range mode to ${newValue}`);
       }
-    } else {
-      this.device.log(`Unknown switch entity: ${data.entity}`);
     }
   }
 }
