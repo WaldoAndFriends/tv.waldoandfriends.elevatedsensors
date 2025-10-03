@@ -20,6 +20,10 @@ class EventHandlers {
     client.on('sensor', (data) => this._handleSensorUpdate(data));
     client.on('select', (data) => this._handleSelectUpdate(data));
     client.on('switch', (data) => this._handleSwitchUpdate(data));
+
+    client.on('connect', (data) => this._handleConnect(data));
+    client.on('error', (data) => this._handleError(data));
+    client.on('disconnect', (data) => this._handleDisconnect(data));
     
     this.device.log('ESPHome event handlers registered successfully');
   }
@@ -131,6 +135,30 @@ class EventHandlers {
         this.device.log(`Updated full range mode to ${newValue}`);
       }
     }
+  }
+
+  /**
+   * Handle ESPHome client connect event
+   */
+  _handleConnect(data) {
+    this.device.setAvailable();
+  }
+
+  /**
+   * Handle ESPHome client error event
+   * @param {Error} error - The error object
+   */
+  _handleError(error) {
+    this.device.error('ESPHome client error:', error);
+    this.device.homey.app.homeyLog.captureException(error);
+  }
+
+  /**
+   * Handle ESPHome client disconnect event
+   * @param {string} reason - Reason for disconnection
+   */
+  _handleDisconnect(reason) {
+    this.device.setUnavailable(reason || "Connection lost");
   }
 }
 
