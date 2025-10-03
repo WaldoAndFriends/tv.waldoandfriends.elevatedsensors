@@ -13,5 +13,8 @@
   },
   "1.0.4": {
     "en": "Added global alarm_presence capability to allow for zone activity"
+  },
+  "1.0.5": {
+    "en": "Fix global alarm_presence logic"
   }
 }
