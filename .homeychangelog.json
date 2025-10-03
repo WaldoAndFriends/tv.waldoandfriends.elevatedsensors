@@ -16,5 +16,8 @@
   },
   "1.0.5": {
     "en": "Fix global alarm_presence logic"
+  },
+  "1.0.6": {
+    "en": "Improve disconnection logic and logging"
   }
 }
