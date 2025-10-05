@@ -22,5 +22,8 @@
   },
   "1.0.7": {
     "en": "Implemented additional ping and reconnection logic"
+  },
+  "1.0.8": {
+    "en": "Update global occupancy based on reported values instead of calculated ones"
   }
 }
