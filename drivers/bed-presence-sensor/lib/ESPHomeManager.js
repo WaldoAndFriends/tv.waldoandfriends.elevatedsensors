@@ -66,6 +66,67 @@ class ESPHomeManager {
   }
 
   /**
+   * Get current connection info (host, port)
+   */
+  getConnectionInfo() {
+    const host = this.device.getStoreValue('address');
+    const port = this.device.getStoreValue('port');
+    return { host, port };
+  }
+
+  /**
+   * Lightweight TCP ping to the ESPHome device's API port.
+   * Returns true if a TCP connection can be established within the timeout.
+   * Avoids dependency on ICMP privileges.
+   * @param {number} timeoutMs
+   * @returns {Promise<boolean>}
+   */
+  async ping(timeoutMs = 2000) {
+    const net = require('net');
+    const { host, port } = this.getConnectionInfo();
+
+    if (!host || !port) {
+      this.device.error('Ping aborted: missing host or port');
+      return false;
+    }
+
+    return new Promise((resolve) => {
+      let settled = false;
+      const socket = new net.Socket();
+
+      const onDone = (result) => {
+        if (settled) return;
+        settled = true;
+        try { socket.destroy(); } catch (_) { /* noop */ }
+        resolve(result);
+      };
+
+      const timeout = setTimeout(() => onDone(false), timeoutMs);
+
+      socket.once('connect', () => {
+        clearTimeout(timeout);
+        onDone(true);
+      });
+      socket.once('error', () => {
+        clearTimeout(timeout);
+        onDone(false);
+      });
+      socket.once('timeout', () => {
+        clearTimeout(timeout);
+        onDone(false);
+      });
+
+      try {
+        socket.setTimeout(timeoutMs);
+        socket.connect({ host, port });
+      } catch (e) {
+        clearTimeout(timeout);
+        onDone(false);
+      }
+    });
+  }
+
+  /**
    * Get the ESPHome client instance
    */
   getClient() {
