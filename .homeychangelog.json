@@ -19,5 +19,8 @@
   },
   "1.0.6": {
     "en": "Improve disconnection logic and logging"
+  },
+  "1.0.7": {
+    "en": "Implemented additional ping and reconnection logic"
   }
 }
