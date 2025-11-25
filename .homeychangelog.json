@@ -25,5 +25,8 @@
   },
   "1.0.8": {
     "en": "Update global occupancy based on reported values instead of calculated ones"
+  },
+  "1.0.9": {
+    "en": "Update underlying library for better compatibility later ESPHome version"
   }
 }
