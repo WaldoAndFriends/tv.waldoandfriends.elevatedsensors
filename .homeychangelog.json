@@ -28,5 +28,8 @@
   },
   "1.0.9": {
     "en": "Update underlying library for better compatibility later ESPHome version"
+  },
+  "1.0.10": {
+    "en": "Set correct logging environment"
   }
 }
